@@ -8,8 +8,11 @@ from aiogram import Bot, Dispatcher, types
 from aiogram.types import ParseMode
 from aiogram.utils import executor
 
-BOT_TOKEN = ""
-ADMIN_ID = 6993504486
+from dotenv import load_dotenv
+load_dotenv()  # load .env
+
+BOT_TOKEN = os.getenv("BOT_TOKEN")
+ADMIN_ID = int(os.getenv("ADMIN_ID"))
 
 bot = Bot(token=BOT_TOKEN, parse_mode=ParseMode.MARKDOWN)
 dp = Dispatcher(bot)
