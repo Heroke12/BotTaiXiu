@@ -7,17 +7,17 @@ import string
 from datetime import datetime
 
 from aiogram import Bot, Dispatcher, types
-from aiogram.types import ParseMode
-from aiogram.utils import executor
-
+from aiogram.enums import ParseMode
+from aiogram.filters import Command
 from dotenv import load_dotenv
+
 load_dotenv()
 
 BOT_TOKEN = os.getenv("BOT_TOKEN")
 ADMIN_ID = int(os.getenv("ADMIN_ID"))
 
 bot = Bot(token=BOT_TOKEN, parse_mode=ParseMode.MARKDOWN)
-dp = Dispatcher(bot)
+dp = Dispatcher()
 
 # ================== KEY SYSTEM ==================
 
@@ -52,17 +52,20 @@ def generate_key():
 def is_user_active(user_id):
     return str(user_id) in users_db
 
-@dp.message_handler(commands=["buykey"])
+
+# ================== USER ==================
+
+@dp.message(Command("buykey"))
 async def buykey_handler(message: types.Message):
     await message.reply(
         "📞 Liên hệ admin để mua key:\n"
-        "Telegram: @Heroke0\n"
-        
+        "Telegram: @Heroke0"
     )
+
 
 # ================== ADMIN ==================
 
-@dp.message_handler(commands=["genkey"])
+@dp.message(Command("genkey"))
 async def gen_key(message: types.Message):
     if message.from_user.id != ADMIN_ID:
         return
@@ -81,7 +84,7 @@ async def gen_key(message: types.Message):
 
 # ================== COMMAND ==================
 
-@dp.message_handler(commands=["redeem"])
+@dp.message(Command("redeem"))
 async def redeem_key(message: types.Message):
     args = message.text.split()
     if len(args) != 2:
@@ -111,8 +114,6 @@ async def redeem_key(message: types.Message):
     save_json(USER_FILE, users_db)
 
     await message.reply("✅ **KÍCH HOẠT THÀNH CÔNG**")
-
-
 
 
 # ================== PREDICTOR ==================
@@ -166,7 +167,7 @@ predictor = TaiXiuPredictor()
 
 # ================== MD5 COMMAND ==================
 
-@dp.message_handler(commands=["md5"])
+@dp.message(Command("md5"))
 async def md5_cmd(message: types.Message):
     if not is_user_active(message.from_user.id):
         await message.reply("🔒 Chưa kích hoạt. Dùng `/redeem <KEY>`")
@@ -190,19 +191,23 @@ async def md5_cmd(message: types.Message):
         f"🔢 `{md5}`\n"
         f"🎯 **KẾT QUẢ:** **{prediction}**\n"
         f"📈 Độ tin cậy: {confidence}%\n"
-        f"🎲 Điểm: {score}\n"
+        f"🎲 Điểm: {score}"
     )
 
 
 # ================== FALLBACK ==================
 
-@dp.message_handler()
+@dp.message()
 async def fallback(message: types.Message):
     await message.reply("ℹ️ Dùng lệnh: `/md5 <chuỗi_md5>`")
 
 
 # ================== RUN ==================
 
-if __name__ == "__main__":
+async def main():
     print("🤖 Bot đang chạy...")
-    executor.start_polling(dp, skip_updates=True)
+    await dp.start_polling(bot)
+
+
+if __name__ == "__main__":
+    asyncio.run(main())
