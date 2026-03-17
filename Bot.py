@@ -52,6 +52,13 @@ def generate_key():
 def is_user_active(user_id):
     return str(user_id) in users_db
 
+@dp.message_handler(commands=["buykey"])
+async def buykey_handler(message: types.Message):
+    await message.reply(
+        "📞 Liên hệ admin để mua key:\n"
+        "Telegram: @Heroke0\n"
+        
+    )
 
 # ================== ADMIN ==================
 
@@ -72,7 +79,7 @@ async def gen_key(message: types.Message):
     await message.reply(f"🔑 **KEY MỚI**\n`{key}`")
 
 
-# ================== USER ==================
+# ================== COMMAND ==================
 
 @dp.message_handler(commands=["redeem"])
 async def redeem_key(message: types.Message):
@@ -104,6 +111,8 @@ async def redeem_key(message: types.Message):
     save_json(USER_FILE, users_db)
 
     await message.reply("✅ **KÍCH HOẠT THÀNH CÔNG**")
+
+
 
 
 # ================== PREDICTOR ==================
