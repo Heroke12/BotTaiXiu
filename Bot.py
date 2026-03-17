@@ -182,7 +182,6 @@ async def md5_cmd(message: types.Message):
         f"🎯 **KẾT QUẢ:** **{prediction}**\n"
         f"📈 Độ tin cậy: {confidence}%\n"
         f"🎲 Điểm: {score}\n"
-        f"🧠 Logic gốc: {base}"
     )
 
 
